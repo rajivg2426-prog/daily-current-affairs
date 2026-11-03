@@ -11,10 +11,15 @@ service cloud.firestore {
     match /ingestState/{id}    { allow read: if isEditor(); allow write: if false; }
 
     // Articles: drafts are editor-only; published ones are public.
+    // Editors may fix text in place, but status only changes through the
+    // publishArticle / rejectArticle functions, which validate the draft.
     match /articles/{id} {
       allow read: if resource.data.status == 'published' || isEditor();
-      allow update: if isEditor();
+      allow update: if isEditor() && request.resource.data.status == resource.data.status;
       allow create, delete: if false;
     }
+
+    // Quiz answers written on publish. Server-only.
+    match /quizKeys/{id} { allow read, write: if false; }
   }
 }

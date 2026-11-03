@@ -6,6 +6,7 @@ import { defineSecret } from 'firebase-functions/params';
 import { Store } from './store';
 import { runIngest, runDrafts, importPbShabd } from './jobs';
 import { anthropicClient } from './ai/draft';
+import { ReviewError } from './review';
 
 initializeApp();
 setGlobalOptions({ region: 'asia-south1', maxInstances: 2 });
@@ -28,9 +29,21 @@ export const draftStories = onSchedule(
   },
 );
 
-function requireEditor(auth: { token: Record<string, unknown> } | undefined) {
+function requireEditor(auth: { uid: string; token: Record<string, unknown> } | undefined): string {
   const role = auth?.token?.role;
-  if (role !== 'super' && role !== 'editor') throw new HttpsError('permission-denied', 'Editors only');
+  if (!auth || (role !== 'super' && role !== 'editor')) throw new HttpsError('permission-denied', 'Editors only');
+  return auth.uid;
+}
+
+function asHttpsError(err: unknown): HttpsError {
+  if (err instanceof ReviewError) return new HttpsError(err.code, err.message);
+  return new HttpsError('internal', String((err as Error)?.message ?? err));
+}
+
+function articleId(data: unknown): string {
+  const id = (data as { id?: unknown } | null)?.id;
+  if (typeof id !== 'string' || !/^[A-Za-z0-9_-]{1,64}$/.test(id)) throw new HttpsError('invalid-argument', 'Pass the article id as { id }');
+  return id;
 }
 
 /** Admin panel: "Fetch now" button. */
@@ -46,5 +59,31 @@ export const importPbShabdStories = onCall({ timeoutSeconds: 120 }, async (req) 
     return await importPbShabd(new Store(), req.data);
   } catch (err) {
     throw new HttpsError('invalid-argument', String((err as Error).message ?? err));
+  }
+});
+
+/**
+ * Admin panel: approve a draft. Input { id, edits? } where edits may correct any
+ * of headline, summary, keyPoints, body, whyImportant, category, examTags,
+ * relevance, syllabus, facts, mcqs. The app shows it from then on.
+ */
+export const publishArticle = onCall(async (req) => {
+  const editor = requireEditor(req.auth);
+  const id = articleId(req.data);
+  try {
+    return await new Store().publishArticle(id, (req.data as { edits?: unknown }).edits, editor);
+  } catch (err) {
+    throw asHttpsError(err);
+  }
+});
+
+/** Admin panel: drop a draft. Input { id, reason }. */
+export const rejectArticle = onCall(async (req) => {
+  const editor = requireEditor(req.auth);
+  const id = articleId(req.data);
+  try {
+    return await new Store().rejectArticle(id, (req.data as { reason?: unknown }).reason, editor);
+  } catch (err) {
+    throw asHttpsError(err);
   }
 });

@@ -23,6 +23,12 @@ every 30 min   ingestSources
   ├─ Claude writes EN + HI: summary, key points, body, why-it-matters, facts, 1–5 MCQs
   ├─ strict validation (4 distinct options, one answer, both languages)
   └─ saved to articles/{id} with status "draft" → editor approves in admin
+
+editor          publishArticle / rejectArticle
+  ├─ checks the draft is complete in English and Hindi, has 1–5 valid MCQs and a source link
+  ├─ applies any corrections the editor made
+  ├─ status "published" + publishDate → the app shows it (USE_FIREBASE=true)
+  └─ answers copied to quizKeys/{id} for future server grading
 ```
 
 Stories found only in newspapers (no official source) are never drafted. They show in the admin "Story radar" so an editor can look for the PIB/ministry release.
@@ -32,7 +38,7 @@ Stories found only in newspapers (no official source) are never drafted. They sh
 ```bash
 cd functions
 npm install
-npm test                       # 39 tests, all offline
+npm test                       # 46 tests, all offline
 npm run ingest:fixtures        # whole pipeline on sample feeds
 npm run ingest:live            # real feeds from your machine (checks every url)
 ANTHROPIC_API_KEY=sk-... npm run ingest:live -- --draft   # also drafts the top story
@@ -52,7 +58,7 @@ firebase deploy --only functions:ingestion,firestore
 
 Functions deploy to `asia-south1` (Mumbai). Cloud Scheduler requires the Blaze (pay-as-you-go) plan; at this volume it stays within the free allowances.
 
-Editors need the custom claim `role: "editor"` (or `"super"`) to call `ingestNow` and `importPbShabdStories`.
+Editors need the custom claim `role: "editor"` (or `"super"`) to call the admin functions below.
 
 ## Admin calls
 
@@ -60,6 +66,23 @@ Editors need the custom claim `role: "editor"` (or `"super"`) to call `ingestNow
 |---|---|---|
 | `ingestNow` | none | Fetch every source now |
 | `importPbShabdStories` | `[{headline, body, storyId?, url?, date?, language: "en"\|"hi", category?}]` | Adds PB-SHABD stories as content items |
+| `publishArticle` | `{id, edits?}` | Approves a draft. `edits` may correct headline, summary, keyPoints, body, whyImportant, category, examTags, relevance, syllabus, facts or mcqs |
+| `rejectArticle` | `{id, reason}` | Drops a draft; it is kept with the reason and not drafted again |
+
+## Reviewing drafts without the admin panel
+
+Until the admin panel exists, editors can review from the command line with their Google credentials:
+
+```bash
+gcloud auth application-default login
+export GCLOUD_PROJECT=<your-project-id>
+npm run review -- list                        # drafts waiting
+npm run review -- show <id>                   # full draft as JSON
+npm run review -- publish <id> [edits.json]   # approve, optionally with corrections
+npm run review -- reject <id> "duplicate"     # drop
+```
+
+Status only changes through these functions. Firestore rules let editors fix text in place but not change `status`, so nothing reaches the app without passing the checks.
 
 ## Firestore written
 
@@ -67,10 +90,11 @@ Editors need the custom claim `role: "editor"` (or `"super"`) to call `ingestNow
 |---|---|---|
 | `sourceItems/{sha1(url)}` | One fetched item; discovery items have no text | Editors |
 | `storyClusters/{id}` | Grouped story, outlets, score, draft link | Editors (Story radar) |
-| `articles/{id}` | `status: "draft"`, bilingual fields, `draftMcqs`, `source` credit | Editors until published |
+| `articles/{id}` | `status: "draft"`, bilingual fields, `draftMcqs`, `source` credit. On publish: `status: "published"`, `publishDate`, `practice`, `facts`, `review` | Editors while draft; everyone once published |
+| `quizKeys/{id}` | Answers for the article's questions | Server only |
 | `ingestState/sources` | Last run per source, errors | Editors |
 
-On publish, the admin panel should move `draftMcqs` into `questions` and `quizKeys` (answers stay server-side).
+The app grades quizzes on the device in v1, so `practice` keeps `answerIndex`. Once server grading (`/quizzes/submit`) is built, drop it from `practice` and grade against `quizKeys`.
 
 ## Before launch
 
