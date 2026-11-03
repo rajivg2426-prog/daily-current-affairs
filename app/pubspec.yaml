@@ -1,0 +1,30 @@
+name: daily_current_affairs
+description: Daily Current Affairs - read, practise and revise current affairs for UPSC, SSC, Banking, Railway and Defence exams.
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_riverpod: ^3.0.0
+  go_router: ^16.0.0
+  shared_preferences: ^2.3.0
+  google_fonts: ^6.2.0
+  url_launcher: ^6.3.0
+  intl: any
+  # Firebase (used when run with --dart-define=USE_FIREBASE=true)
+  firebase_core: ^4.0.0
+  cloud_firestore: ^6.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SAMPLE FIXTURE -->
+<rss version="2.0"><channel><title>Press Releases from RBI</title>
+<item>
+  <title>Monetary Policy Statement: Resolution of the Monetary Policy Committee</title>
+  <link>https://rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=99999</link>
+  <pubDate>Tue, 03 Nov 2026 10:00:00 GMT</pubDate>
+  <description>The Monetary Policy Committee (MPC) met and decided on the policy repo rate under the liquidity adjustment facility.</description>
+</item>
+</channel></rss>

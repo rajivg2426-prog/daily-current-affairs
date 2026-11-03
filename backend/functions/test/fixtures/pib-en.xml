@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SAMPLE FIXTURE for tests. Shape mirrors a PIB RSS feed; text is invented test data. -->
+<rss version="2.0">
+  <channel>
+    <title>PIB - Press Releases</title>
+    <link>https://pib.gov.in</link>
+    <item>
+      <title><![CDATA[Cabinet approves National Mission on Critical Minerals to secure supply chains]]></title>
+      <link>https://pib.gov.in/PressReleasePage.aspx?PRID=1000001&amp;utm_source=rss</link>
+      <pubDate>Tue, 03 Nov 2026 10:30:00 +0530</pubDate>
+      <description><![CDATA[<p>The Union Cabinet approved a National Mission on Critical Minerals. The Mission will be implemented by the Ministry of Mines.</p><p>It covers exploration, processing and recycling of critical minerals.</p>]]></description>
+    </item>
+    <item>
+      <title>Joint military exercise between India and Japan begins in Rajasthan</title>
+      <link>https://pib.gov.in/PressReleasePage.aspx?PRID=1000002</link>
+      <pubDate>Tue, 03 Nov 2026 09:00:00 +0530</pubDate>
+      <description>The joint military exercise between the Indian Army and the Japan Ground Self-Defense Force began today.</description>
+    </item>
+    <item>
+      <title>World Science Day for Peace and Development to be observed on 10 November</title>
+      <link>https://pib.gov.in/PressReleasePage.aspx?PRID=1000003</link>
+      <pubDate>Mon, 02 Nov 2026 18:00:00 +0530</pubDate>
+      <description>The day is observed every year on 10 November.</description>
+    </item>
+  </channel>
+</rss>

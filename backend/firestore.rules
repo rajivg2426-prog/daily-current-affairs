@@ -1,0 +1,20 @@
+rules_version = '2';
+// Ingestion collections only. Merge these blocks into the app's main rules file.
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function isEditor() { return request.auth != null && request.auth.token.role in ['super', 'editor']; }
+
+    // Raw fetched items and story clusters: written by Cloud Functions only,
+    // readable by editors for the admin "Story radar" screen.
+    match /sourceItems/{id}    { allow read: if isEditor(); allow write: if false; }
+    match /storyClusters/{id}  { allow read: if isEditor(); allow write: if false; }
+    match /ingestState/{id}    { allow read: if isEditor(); allow write: if false; }
+
+    // Articles: drafts are editor-only; published ones are public.
+    match /articles/{id} {
+      allow read: if resource.data.status == 'published' || isEditor();
+      allow update: if isEditor();
+      allow create, delete: if false;
+    }
+  }
+}

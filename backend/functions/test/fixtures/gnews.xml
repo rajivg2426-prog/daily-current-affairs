@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SAMPLE FIXTURE -->
+<rss version="2.0"><channel><title>Top stories - Google News</title>
+<item>
+  <title>National mission on critical minerals approved by Cabinet - The Indian Express</title>
+  <link>https://news.google.com/rss/articles/abc123</link>
+  <pubDate>Tue, 03 Nov 2026 06:20:00 GMT</pubDate>
+  <description>&lt;a href="x"&gt;snippet&lt;/a&gt;</description>
+  <source url="https://indianexpress.com">The Indian Express</source>
+</item>
+<item>
+  <title>India, Japan armies begin joint military exercise in Rajasthan - Hindustan Times</title>
+  <link>https://news.google.com/rss/articles/def456</link>
+  <pubDate>Tue, 03 Nov 2026 05:00:00 GMT</pubDate>
+  <source url="https://www.hindustantimes.com">Hindustan Times</source>
+</item>
+</channel></rss>

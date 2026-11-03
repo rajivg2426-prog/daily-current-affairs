@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SAMPLE FIXTURE -->
+<rss version="2.0"><channel><title>The Hindu - National</title>
+<item>
+  <title>Cabinet approves National Critical Minerals Mission, Ministry of Mines to implement</title>
+  <link>https://www.thehindu.com/news/national/critical-minerals-mission/article1.ece?utm_source=rss</link>
+  <pubDate>Tue, 03 Nov 2026 11:10:00 +0530</pubDate>
+  <description>Full newspaper text that must never be stored.</description>
+</item>
+<item>
+  <title>Monsoon session dates announced</title>
+  <link>https://www.thehindu.com/news/national/monsoon-session/article2.ece</link>
+  <pubDate>Tue, 03 Nov 2026 08:00:00 +0530</pubDate>
+  <description>Newspaper text.</description>
+</item>
+</channel></rss>
