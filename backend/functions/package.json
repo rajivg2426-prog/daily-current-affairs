@@ -9,7 +9,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "ingest:live": "tsx scripts/dryRun.ts --live",
     "ingest:fixtures": "tsx scripts/dryRun.ts",
-    "deploy": "npm run build && firebase deploy --only functions"
+    "deploy": "npm run build && firebase deploy --only functions",
+    "review": "tsx scripts/review.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.4.0",
